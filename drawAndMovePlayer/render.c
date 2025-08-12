@@ -5,7 +5,7 @@
 #include <math.h>
 
 #include "render.h"
-#include "inputs.h"
+// #include "inputs.h"
 
 #define WIDTH 1920
 #define HEIGHT 1080

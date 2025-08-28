@@ -1,18 +1,19 @@
 #pragma once
 #include "config.h"
+#include <bits/types/struct_timeval.h>
 
 struct Square {
-	double xx;
-	double yy;
-	double hh;
-	double ww;
+  double xx;
+  double yy;
+  double hh;
+  double ww;
 
-	double rot;
+  double rot;
 };
 
 struct Point {
-   double xx;
-   double yy;
+  double xx;
+  double yy;
 };
 
 struct inputEvent {

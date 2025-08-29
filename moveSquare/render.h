@@ -23,4 +23,4 @@ void drawSquare(unsigned char *frameBuffer, struct Square *square,
 void drawLine(unsigned char *frameBuffer, struct Point point1,
               struct Point point2);
 void writeToScreen(int fd, unsigned char *frameBuffer);
-int drawLoop(struct Square *sharedSquare);
+int drawLoop(struct Square *sharedSquare, int draw);

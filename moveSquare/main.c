@@ -28,7 +28,8 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
   if (mainFork == 0) {
-    drawLoop(sharedSquare);
+    int draw = 1;
+    drawLoop(sharedSquare, draw);
     exit(0);
   }
 
@@ -44,6 +45,7 @@ int main(int argc, char *argv[]) {
 
   if (physicsFork != 0 && mainFork != 0) {
     inputLoop(inputMemory);
+    exit(0);
   }
-  exit(0);
+  return 0;
 }

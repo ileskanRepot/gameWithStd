@@ -80,7 +80,7 @@ int physicsLoop(char *inputMemory, struct Square *sharedSquare) {
 
     uint64_t delta_us1 = (stop1.tv_sec - start.tv_sec) * 1000000 +
                          (stop1.tv_usec - start.tv_usec);
-    useconds_t sleepTime = 1000 * 1000 / FPS - delta_us1 - 100;
+    useconds_t sleepTime = 1000 * 1000 / PPS - delta_us1 - 100;
     usleep(sleepTime);
     gettimeofday(&stop2, NULL);
     uint64_t delta_us2 = (stop2.tv_sec - start.tv_sec) * 1000000 +

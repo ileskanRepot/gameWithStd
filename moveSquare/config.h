@@ -5,6 +5,7 @@
 #define PIXEL_SIZE (4)
 #define BUFF_SIZE (WIDTH * HEIGHT * PIXEL_SIZE)
 #define FPS (100) // Frames per second
+#define PPS (100) // OPhysics per second
 
 #define KEY_COUNT (5)
 enum charKeyCodes {

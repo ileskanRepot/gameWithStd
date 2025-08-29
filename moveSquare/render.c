@@ -92,7 +92,7 @@ void writeToScreen(int fd, unsigned char *frameBuffer) {
   }
 }
 
-int drawLoop(struct Square *sharedSquare) {
+int drawLoop(struct Square *sharedSquare, int draw) {
   int screenFd = open("/dev/fb0", O_WRONLY);
   if (screenFd < 0) {
     perror("Could not open frame buffer");
@@ -111,14 +111,21 @@ int drawLoop(struct Square *sharedSquare) {
     gettimeofday(&start, NULL);
 
     blackBox(frameBuffer);
+
     drawSquare(frameBuffer, square, 0, 0, 255);
-    writeToScreen(screenFd, frameBuffer);
+    if (draw) {
+      writeToScreen(screenFd, frameBuffer);
+    }
     gettimeofday(&stop1, NULL);
 
     uint64_t delta_us1 = (stop1.tv_sec - start.tv_sec) * 1000000 +
                          (stop1.tv_usec - start.tv_usec);
-    useconds_t sleepTime = 1000 * 1000 / FPS - delta_us1 - 100;
-    usleep(sleepTime);
+    int sleepTime = 1000 * 1000 / FPS - delta_us1 - 100;
+    if (sleepTime < 0) {
+      printf("Too slow");
+    } else {
+      usleep(sleepTime);
+    }
     gettimeofday(&stop2, NULL);
     uint64_t delta_us2 = (stop2.tv_sec - start.tv_sec) * 1000000 +
                          (stop2.tv_usec - start.tv_usec);

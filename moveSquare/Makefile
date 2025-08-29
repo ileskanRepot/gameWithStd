@@ -8,7 +8,7 @@ test: test.c $(FILES)
 	$(CC) -g -lm -O3 -fopenmp test.c $(FILES) -o test
 
 run: all
-	./main
+	sudo ./main
 
 val: all
 	valgrind -s ./main

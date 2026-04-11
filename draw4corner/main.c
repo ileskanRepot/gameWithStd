@@ -33,11 +33,11 @@ int main(int argc, char *argv[]) {
   sharedTriangle->corners[0].xx = 100;
   sharedTriangle->corners[0].yy = 100;
 
-  sharedTriangle->corners[1].xx = 150;
-  sharedTriangle->corners[1].yy = 50;
+  sharedTriangle->corners[1].xx = 1632;
+  sharedTriangle->corners[1].yy = 376;
 
-  sharedTriangle->corners[2].xx = 250;
-  sharedTriangle->corners[2].yy = 250;
+  sharedTriangle->corners[2].xx = 192;
+  sharedTriangle->corners[2].yy = 654;
 
   pid_t mainFork = fork();
   if (mainFork < 0) {
@@ -46,6 +46,8 @@ int main(int argc, char *argv[]) {
   }
   if (mainFork == 0) {
     int draw = 1;
+    if (argc >= 2)
+      draw = 0;
     drawLoop(sharedSquare, sharedTriangle, draw);
     return 0;
   }

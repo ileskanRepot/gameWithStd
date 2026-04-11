@@ -7,6 +7,11 @@ struct Point {
   double yy;
 };
 
+struct Line {
+  double kk;
+  double bb;
+};
+
 struct Color {
   unsigned char rr;
   unsigned char gg;

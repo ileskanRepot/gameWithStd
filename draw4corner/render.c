@@ -33,24 +33,22 @@ void sortTriangleCorners(struct Triangle *triangle) {
   return;
 }
 
+void twoPointToLine(struct Point *p0, struct Point *p1, struct Line *line) {
+  line->kk = (p0->yy - p1->yy) / (p0->xx - p1->xx);
+  line->bb = p0->yy - line->kk * p0->xx;
+}
+
 void drawTriangle(unsigned char *frameBuffer, struct Triangle *triangle,
                   unsigned char col0, unsigned char col1, unsigned char col2) {
   sortTriangleCorners(triangle);
 
-  double f0t2k = (triangle->corners[0].yy - triangle->corners[2].yy) /
-                 (triangle->corners[0].xx - triangle->corners[2].xx);
-  double f0t2b = triangle->corners[0].yy - f0t2k * triangle->corners[0].xx;
-
-  double f0t1k = (triangle->corners[0].yy - triangle->corners[1].yy) /
-                 (triangle->corners[0].xx - triangle->corners[1].xx);
-  double f0t1b = triangle->corners[0].yy - f0t1k * triangle->corners[0].xx;
-
-  double f1t2k = (triangle->corners[1].yy - triangle->corners[2].yy) /
-                 (triangle->corners[1].xx - triangle->corners[2].xx);
-  double f1t2b = triangle->corners[1].yy - f1t2k * triangle->corners[1].xx;
+  struct Line l0t2, l0t1, l1t2;
+  twoPointToLine(&triangle->corners[0], &triangle->corners[1], &l0t1);
+  twoPointToLine(&triangle->corners[0], &triangle->corners[2], &l0t2);
+  twoPointToLine(&triangle->corners[1], &triangle->corners[2], &l1t2);
 
   for (int xx = triangle->corners[0].xx; xx < triangle->corners[1].xx; xx++) {
-    int pos = (int)f0t1k * xx + f0t1b;
+    int pos = l0t1.kk * xx + l0t1.bb;
     pos *= WIDTH;
     pos += xx;
     pos *= PIXEL_SIZE;
@@ -59,7 +57,7 @@ void drawTriangle(unsigned char *frameBuffer, struct Triangle *triangle,
   }
 
   for (int xx = triangle->corners[1].xx; xx < triangle->corners[2].xx; xx++) {
-    int pos = (int)f1t2k * xx + f1t2b;
+    int pos = l1t2.kk * xx + l1t2.bb;
     pos *= WIDTH;
     pos += xx;
     pos *= PIXEL_SIZE;
@@ -68,7 +66,7 @@ void drawTriangle(unsigned char *frameBuffer, struct Triangle *triangle,
   }
 
   for (int xx = triangle->corners[0].xx; xx < triangle->corners[2].xx; xx++) {
-    int pos = (int)f0t2k * xx + f0t2b;
+    int pos = l0t2.kk * xx + l0t2.bb;
     pos *= WIDTH;
     pos += xx;
     pos *= PIXEL_SIZE;
@@ -77,13 +75,13 @@ void drawTriangle(unsigned char *frameBuffer, struct Triangle *triangle,
   }
 
   for (int ii = 0; ii < 3; ii++) {
-    int pos = (int)triangle->corners[ii].yy;
+    int pos = triangle->corners[ii].yy;
     pos *= WIDTH;
     pos += (int)triangle->corners[ii].xx;
     pos *= PIXEL_SIZE;
 
     frameBuffer[pos + 0] = 255;
-    frameBuffer[pos + 1] = 255;
+    frameBuffer[pos + 1] = 0;
     frameBuffer[pos + 2] = 255;
     printf("xx: %.02f yy: %.02f\n", triangle->corners[ii].xx,
            triangle->corners[ii].yy);

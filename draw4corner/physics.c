@@ -1,7 +1,19 @@
 #include "physics.h"
+#include "structs.h"
 
-int physicsLoop(char *inputMemory, struct Square *sharedSquare) {
+int physicsLoop(char *inputMemory, struct Square *sharedSquare,
+                struct Triangle *sharedTriangle) {
   //   unsigned char *frameBuffer = malloc(BUFF_SIZE);
+  struct Triangle *triangle = sharedTriangle;
+  triangle->corners[0].xx = 100;
+  triangle->corners[0].yy = 100;
+
+  triangle->corners[1].xx = 1632;
+  triangle->corners[1].yy = 376;
+
+  triangle->corners[2].xx = 1400;
+  triangle->corners[2].yy = 854;
+
   struct Square *square = sharedSquare;
   square->xx = 500;
   square->yy = 500;
@@ -60,21 +72,21 @@ int physicsLoop(char *inputMemory, struct Square *sharedSquare) {
       speedXX = 0;
     }
 
-    square->xx += speedXX;
-    square->yy -= speedYY;
+    triangle->corners[0].xx += speedXX;
+    triangle->corners[0].yy -= speedYY;
     speedXX -= sign(speedXX) * speedDrop;
     speedYY -= sign(speedYY) * speedDrop;
     speedXX = absMy(speedXX) < speedDrop ? 0 : speedXX;
     speedYY = absMy(speedYY) < speedDrop ? 0 : speedYY;
 
-    if (square->yy >= max.yy - square->hh)
-      square->yy = max.yy - square->hh - 1;
-    if (square->xx >= max.xx - square->ww)
-      square->xx = max.xx - square->ww - 1;
-    if (square->xx < 0)
-      square->xx = 0;
-    if (square->yy < 0)
-      square->yy = 0;
+    if (triangle->corners[0].yy >= max.yy)
+      triangle->corners[0].yy = max.yy - 1;
+    if (triangle->corners[0].xx >= max.xx)
+      triangle->corners[0].xx = max.xx - 1;
+    if (triangle->corners[0].yy < 0)
+      triangle->corners[0].yy = 0;
+    if (triangle->corners[0].xx < 0)
+      triangle->corners[0].xx = 0;
 
     gettimeofday(&stop1, NULL);
 

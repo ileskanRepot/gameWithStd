@@ -9,6 +9,7 @@ struct Point {
 
 struct Line {
   double kk;
+  double oneOverkk;
   double bb;
 };
 

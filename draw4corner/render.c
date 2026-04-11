@@ -23,7 +23,7 @@ void drawSquare(unsigned char *frameBuffer, struct Square *square,
 void sortTriangleCorners(struct Triangle *triangle) {
   for (int ii = 0; ii < 3; ii++) {
     for (int jj = ii + 1; jj < 3; jj++) {
-      if (triangle->corners[ii].xx > triangle->corners[jj].xx) {
+      if (triangle->corners[ii].yy > triangle->corners[jj].yy) {
         swap(&triangle->corners[ii].xx, &triangle->corners[jj].xx);
         swap(&triangle->corners[ii].yy, &triangle->corners[jj].yy);
       }
@@ -34,10 +34,13 @@ void sortTriangleCorners(struct Triangle *triangle) {
 }
 
 void twoPointToLine(struct Point *p0, struct Point *p1, struct Line *line) {
-  if (p0->xx != p1->xx)
+  if (p0->xx != p1->xx) {
     line->kk = (p0->yy - p1->yy) / (p0->xx - p1->xx);
-  else
+    line->oneOverkk = 1.0 / line->kk;
+  } else {
     line->kk = 0;
+    line->oneOverkk = 0;
+  }
   line->bb = p0->yy - line->kk * p0->xx;
 }
 
@@ -50,15 +53,15 @@ void drawTriangle(unsigned char *frameBuffer, struct Triangle *triangle,
   twoPointToLine(&triangle->corners[0], &triangle->corners[2], &l0t2);
   twoPointToLine(&triangle->corners[1], &triangle->corners[2], &l1t2);
 
-  for (int xx = triangle->corners[0].xx; xx < triangle->corners[1].xx; xx++) {
-    int yyStart = l0t2.kk * xx + l0t2.bb;
-    int yyEnd = l0t1.kk * xx + l0t1.bb;
-    if (yyStart > yyEnd) {
-      int tmp = yyStart;
-      yyStart = yyEnd;
-      yyEnd = tmp;
+  for (int yy = triangle->corners[0].yy; yy < triangle->corners[1].yy; yy++) {
+    int xxStart = (yy - l0t2.bb) * l0t2.oneOverkk;
+    int xxEnd = (yy - l0t1.bb) * l0t1.oneOverkk;
+    if (xxStart > xxEnd) {
+      int tmp = xxStart;
+      xxStart = xxEnd;
+      xxEnd = tmp;
     }
-    for (int yy = yyStart; yy < yyEnd; yy++) {
+    for (int xx = xxStart; xx < xxEnd; xx++) {
       int pos = yy;
       pos *= WIDTH;
       pos += xx;
@@ -69,15 +72,15 @@ void drawTriangle(unsigned char *frameBuffer, struct Triangle *triangle,
     }
   }
 
-  for (int xx = triangle->corners[1].xx; xx < triangle->corners[2].xx; xx++) {
-    int yyStart = l0t2.kk * xx + l0t2.bb;
-    int yyEnd = l1t2.kk * xx + l1t2.bb;
-    if (yyStart > yyEnd) {
-      int tmp = yyStart;
-      yyStart = yyEnd;
-      yyEnd = tmp;
+  for (int yy = triangle->corners[1].yy; yy < triangle->corners[2].yy; yy++) {
+    int xxStart = (yy - l0t2.bb) * l0t2.oneOverkk;
+    int xxEnd = (yy - l1t2.bb) * l1t2.oneOverkk;
+    if (xxStart > xxEnd) {
+      int tmp = xxStart;
+      xxStart = xxEnd;
+      xxEnd = tmp;
     }
-    for (int yy = yyStart; yy < yyEnd; yy++) {
+    for (int xx = xxStart; xx < xxEnd; xx++) {
       int pos = yy;
       pos *= WIDTH;
       pos += xx;
@@ -88,18 +91,18 @@ void drawTriangle(unsigned char *frameBuffer, struct Triangle *triangle,
     }
   }
 
-  for (int ii = 0; ii < 3; ii++) {
-    int pos = triangle->corners[ii].yy;
-    pos *= WIDTH;
-    pos += (int)triangle->corners[ii].xx;
-    pos *= PIXEL_SIZE;
+  // for (int ii = 0; ii < 3; ii++) {
+  //   int pos = triangle->corners[ii].yy;
+  //   pos *= WIDTH;
+  //   pos += (int)triangle->corners[ii].xx;
+  //   pos *= PIXEL_SIZE;
 
-    frameBuffer[pos + 0] = 255;
-    frameBuffer[pos + 1] = 0;
-    frameBuffer[pos + 2] = 255;
-    printf("xx: %.02f yy: %.02f\n", triangle->corners[ii].xx,
-           triangle->corners[ii].yy);
-  }
+  //   frameBuffer[pos + 0] = 255;
+  //   frameBuffer[pos + 1] = 0;
+  //   frameBuffer[pos + 2] = 255;
+  //   // printf("xx: %.02f yy: %.02f\n", triangle->corners[ii].xx,
+  //   //        triangle->corners[ii].yy);
+  // }
 
   return;
 }
@@ -145,8 +148,7 @@ int drawLoop(struct Square *sharedSquare, struct Triangle *sharedTriangle,
     uint64_t delta_us1 = (stop1.tv_sec - start.tv_sec) * 1000000 +
                          (stop1.tv_usec - start.tv_usec);
     int sleepTime = 1000 * 1000 / FPS - delta_us1;
-    usleep(1000 * 1000);
-    printf("Took: %ld\n", delta_us1);
+    // printf("Took: %ld\n", delta_us1);
     if (sleepTime < 0) {
       printf("Too slow");
     } else {
@@ -156,7 +158,7 @@ int drawLoop(struct Square *sharedSquare, struct Triangle *sharedTriangle,
     uint64_t delta_us2 = (stop2.tv_sec - start.tv_sec) * 1000000 +
                          (stop2.tv_usec - start.tv_usec);
 
-    running = 0;
+    // running = 0;
   }
 
   free(frameBuffer);

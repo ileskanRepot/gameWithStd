@@ -30,15 +30,6 @@ int main(int argc, char *argv[]) {
   sharedSquare->ww = 50;
   sharedSquare->hh = 50;
 
-  sharedTriangle->corners[0].xx = 100;
-  sharedTriangle->corners[0].yy = 100;
-
-  sharedTriangle->corners[1].xx = 1632;
-  sharedTriangle->corners[1].yy = 376;
-
-  sharedTriangle->corners[2].xx = 1400;
-  sharedTriangle->corners[2].yy = 854;
-
   pid_t mainFork = fork();
   if (mainFork < 0) {
     perror("Fork failed");
@@ -49,12 +40,8 @@ int main(int argc, char *argv[]) {
     if (argc >= 2)
       draw = 0;
     drawLoop(sharedSquare, sharedTriangle, draw);
-    return 0;
+    exit(0);
   }
-
-  // usleep(5 * 1000 * 1000);
-
-  return 0;
 
   pid_t physicsFork = fork();
   if (physicsFork < 0) {
@@ -62,7 +49,7 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
   if (physicsFork == 0 && mainFork != 0) {
-    physicsLoop(inputMemory, sharedSquare);
+    physicsLoop(inputMemory, sharedSquare, sharedTriangle);
     exit(0);
   }
 

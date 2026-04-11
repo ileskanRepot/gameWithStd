@@ -36,8 +36,8 @@ int main(int argc, char *argv[]) {
   sharedTriangle->corners[1].xx = 1632;
   sharedTriangle->corners[1].yy = 376;
 
-  sharedTriangle->corners[2].xx = 192;
-  sharedTriangle->corners[2].yy = 654;
+  sharedTriangle->corners[2].xx = 1400;
+  sharedTriangle->corners[2].yy = 854;
 
   pid_t mainFork = fork();
   if (mainFork < 0) {

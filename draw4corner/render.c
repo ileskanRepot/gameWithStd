@@ -34,7 +34,10 @@ void sortTriangleCorners(struct Triangle *triangle) {
 }
 
 void twoPointToLine(struct Point *p0, struct Point *p1, struct Line *line) {
-  line->kk = (p0->yy - p1->yy) / (p0->xx - p1->xx);
+  if (p0->xx != p1->xx)
+    line->kk = (p0->yy - p1->yy) / (p0->xx - p1->xx);
+  else
+    line->kk = 0;
   line->bb = p0->yy - line->kk * p0->xx;
 }
 
@@ -48,30 +51,41 @@ void drawTriangle(unsigned char *frameBuffer, struct Triangle *triangle,
   twoPointToLine(&triangle->corners[1], &triangle->corners[2], &l1t2);
 
   for (int xx = triangle->corners[0].xx; xx < triangle->corners[1].xx; xx++) {
-    int pos = l0t1.kk * xx + l0t1.bb;
-    pos *= WIDTH;
-    pos += xx;
-    pos *= PIXEL_SIZE;
+    int yyStart = l0t2.kk * xx + l0t2.bb;
+    int yyEnd = l0t1.kk * xx + l0t1.bb;
+    if (yyStart > yyEnd) {
+      int tmp = yyStart;
+      yyStart = yyEnd;
+      yyEnd = tmp;
+    }
+    for (int yy = yyStart; yy < yyEnd; yy++) {
+      int pos = yy;
+      pos *= WIDTH;
+      pos += xx;
+      pos *= PIXEL_SIZE;
 
-    frameBuffer[pos + 1] = 255;
+      frameBuffer[pos + 1] = 255;
+      frameBuffer[pos + 2] = 255;
+    }
   }
 
   for (int xx = triangle->corners[1].xx; xx < triangle->corners[2].xx; xx++) {
-    int pos = l1t2.kk * xx + l1t2.bb;
-    pos *= WIDTH;
-    pos += xx;
-    pos *= PIXEL_SIZE;
+    int yyStart = l0t2.kk * xx + l0t2.bb;
+    int yyEnd = l1t2.kk * xx + l1t2.bb;
+    if (yyStart > yyEnd) {
+      int tmp = yyStart;
+      yyStart = yyEnd;
+      yyEnd = tmp;
+    }
+    for (int yy = yyStart; yy < yyEnd; yy++) {
+      int pos = yy;
+      pos *= WIDTH;
+      pos += xx;
+      pos *= PIXEL_SIZE;
 
-    frameBuffer[pos + 1] = 255;
-  }
-
-  for (int xx = triangle->corners[0].xx; xx < triangle->corners[2].xx; xx++) {
-    int pos = l0t2.kk * xx + l0t2.bb;
-    pos *= WIDTH;
-    pos += xx;
-    pos *= PIXEL_SIZE;
-
-    frameBuffer[pos + 1] = 255;
+      frameBuffer[pos + 1] = 255;
+      frameBuffer[pos + 2] = 255;
+    }
   }
 
   for (int ii = 0; ii < 3; ii++) {
@@ -115,7 +129,7 @@ int drawLoop(struct Square *sharedSquare, struct Triangle *sharedTriangle,
 
   struct timeval start, stop1, stop2;
 
-  char up = 0, down = 0, left = 0, right = 0, running = 1;
+  char up = 0, down = 0, left = 0, right = 0, running = 1, tooSlow = 0;
   while (running) {
     gettimeofday(&start, NULL);
 
@@ -130,7 +144,9 @@ int drawLoop(struct Square *sharedSquare, struct Triangle *sharedTriangle,
 
     uint64_t delta_us1 = (stop1.tv_sec - start.tv_sec) * 1000000 +
                          (stop1.tv_usec - start.tv_usec);
-    int sleepTime = 1000 * 1000 / FPS - delta_us1 - 100;
+    int sleepTime = 1000 * 1000 / FPS - delta_us1;
+    usleep(1000 * 1000);
+    printf("Took: %ld\n", delta_us1);
     if (sleepTime < 0) {
       printf("Too slow");
     } else {

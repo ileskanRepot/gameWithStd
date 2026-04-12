@@ -33,7 +33,8 @@ void sortTriangleCorners(struct Triangle *triangle) {
   return;
 }
 
-void drawLine(unsigned char *frameBuffer, struct Point p0, struct Point p1) {
+void drawLine(unsigned char *frameBuffer, struct Point2d p0,
+              struct Point2d p1) {
   struct Line line;
   if (p0.xx > p1.xx) {
     swap(&p0.xx, &p1.xx);
@@ -94,7 +95,7 @@ void draw4corners(unsigned char *frameBuffer, struct FourCorner *fourCorner) {
   }
 }
 
-void twoPointToLine(struct Point *p0, struct Point *p1, struct Line *line) {
+void twoPointToLine(struct Point2d *p0, struct Point2d *p1, struct Line *line) {
   if (p0->xx != p1->xx) {
     line->kk = (p0->yy - p1->yy) / (p0->xx - p1->xx);
     line->oneOverkk = 1.0 / line->kk;
@@ -176,6 +177,8 @@ void drawTriangle(unsigned char *frameBuffer, struct Triangle *triangle,
   return;
 }
 
+void drawPlane(unsigned char *frameBuffer, struct Plane *plane) {}
+
 void writeToScreen(int fd, unsigned char *frameBuffer) {
   lseek(fd, 0, SEEK_SET);
   int ret = write(fd, frameBuffer, BUFF_SIZE);
@@ -185,7 +188,7 @@ void writeToScreen(int fd, unsigned char *frameBuffer) {
   }
 }
 
-int drawLoop(struct FourCorner *sharedFourCorner, int draw) {
+int drawLoop(struct Plane *sharedPlane, int draw) {
   int screenFd = open("/dev/fb0", O_WRONLY);
   if (screenFd < 0) {
     perror("Could not open frame buffer");
@@ -195,7 +198,7 @@ int drawLoop(struct FourCorner *sharedFourCorner, int draw) {
   char record = 0;
 
   unsigned char *frameBuffer = malloc(BUFF_SIZE);
-  struct FourCorner *fourCorner = sharedFourCorner;
+  struct Plane *plane = sharedPlane;
 
   struct timeval start, stop1, stop2;
 
@@ -208,7 +211,8 @@ int drawLoop(struct FourCorner *sharedFourCorner, int draw) {
     // drawSquare(frameBuffer, square, 0, 0, 255);
     // drawTriangle(frameBuffer, &triangle[0], 0, 0, 255);
     // drawTriangle(frameBuffer, &triangle[1], 255, 0, 255);
-    draw4corners(frameBuffer, fourCorner);
+    // draw4corners(frameBuffer, fourCorner);
+    drawPlane(frameBuffer, plane);
     if (draw) {
       writeToScreen(screenFd, frameBuffer);
     }

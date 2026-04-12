@@ -13,5 +13,4 @@
 #include "misc.h"
 #include "structs.h"
 
-int physicsLoop(char *inputMemory, struct Square *sharedSquare,
-                struct Triangle *sharedTriangle);
+int physicsLoop(char *inputMemory, struct Cube *cube);

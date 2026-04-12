@@ -1,24 +1,19 @@
 #include "physics.h"
 #include "structs.h"
 
-int physicsLoop(char *inputMemory, struct Square *sharedSquare,
-                struct Triangle *sharedTriangle) {
+int physicsLoop(char *inputMemory, struct Plane *sharedPlane) {
   //   unsigned char *frameBuffer = malloc(BUFF_SIZE);
-  struct Triangle *triangle = sharedTriangle;
-  for (int triangleNum = 0; triangleNum < 2; triangleNum++) {
-    for (int cornerNum = 0; cornerNum < 3; cornerNum++) {
-      triangle[triangleNum].corners[cornerNum].xx = rand() % 1920;
-      triangle[triangleNum].corners[cornerNum].yy = rand() % 1080;
-    }
-  }
 
-  struct Square *square = sharedSquare;
-  square->xx = 500;
-  square->yy = 500;
-  square->ww = 100;
-  square->hh = 100;
+  struct Plane *plane = sharedPlane;
+  plane->corners[0].xx = 5;
+  cube->pos.yy = 0;
+  cube->pos.zz = 0;
 
-  struct Point max = {.xx = WIDTH, .yy = HEIGHT};
+  cube->size.xx = 1;
+  cube->size.yy = 1;
+  cube->size.zz = 1;
+
+  struct Point2d max = {.xx = WIDTH, .yy = HEIGHT};
 
   const double baseSpeed = 15.0;
   const double bothDirSpeed = 1.0 / sqrt(2);
@@ -70,21 +65,21 @@ int physicsLoop(char *inputMemory, struct Square *sharedSquare,
       speedXX = 0;
     }
 
-    triangle->corners[0].xx += speedXX;
-    triangle->corners[0].yy -= speedYY;
+    cube->pos.yy += speedXX;
+    cube->pos.zz -= speedYY;
     speedXX -= sign(speedXX) * speedDrop;
     speedYY -= sign(speedYY) * speedDrop;
     speedXX = absMy(speedXX) < speedDrop ? 0 : speedXX;
     speedYY = absMy(speedYY) < speedDrop ? 0 : speedYY;
 
-    if (triangle->corners[0].yy >= max.yy)
-      triangle->corners[0].yy = max.yy - 1;
-    if (triangle->corners[0].xx >= max.xx)
-      triangle->corners[0].xx = max.xx - 1;
-    if (triangle->corners[0].yy < 0)
-      triangle->corners[0].yy = 0;
-    if (triangle->corners[0].xx < 0)
-      triangle->corners[0].xx = 0;
+    // if (triangle->corners[0].yy >= max.yy)
+    //   triangle->corners[0].yy = max.yy - 1;
+    // if (triangle->corners[0].xx >= max.xx)
+    //   triangle->corners[0].xx = max.xx - 1;
+    // if (triangle->corners[0].yy < 0)
+    //   triangle->corners[0].yy = 0;
+    // if (triangle->corners[0].xx < 0)
+    //   triangle->corners[0].xx = 0;
 
     gettimeofday(&stop1, NULL);
 

@@ -6,9 +6,15 @@ struct GameState {
   unsigned char running;
 };
 
-struct Point {
+struct Point2d {
   double xx;
   double yy;
+};
+
+struct Point3d {
+  double xx;
+  double yy;
+  double zz;
 };
 
 struct Line {
@@ -32,9 +38,8 @@ struct Square {
 
   double rot;
 };
-
 struct Triangle {
-  struct Point corners[3];
+  struct Point2d corners[3];
 };
 
 /*
@@ -43,8 +48,20 @@ struct Triangle {
  * ...
  */
 struct FourCorner {
-  struct Point corners[4];
+  struct Point2d corners[4];
   struct Triangle drawTriangles[2];
+};
+
+struct Plane {
+  struct Point3d corners[4];
+};
+
+struct Cube {
+  struct Point3d pos;
+  struct Point3d size;
+
+  struct Square drawSquare[6];
+  char isShownPlane[6];
 };
 
 /*

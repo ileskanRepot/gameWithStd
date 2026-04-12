@@ -5,14 +5,12 @@ int physicsLoop(char *inputMemory, struct Square *sharedSquare,
                 struct Triangle *sharedTriangle) {
   //   unsigned char *frameBuffer = malloc(BUFF_SIZE);
   struct Triangle *triangle = sharedTriangle;
-  triangle->corners[0].xx = 100;
-  triangle->corners[0].yy = 100;
-
-  triangle->corners[1].xx = 1632;
-  triangle->corners[1].yy = 376;
-
-  triangle->corners[2].xx = 1400;
-  triangle->corners[2].yy = 854;
+  for (int triangleNum = 0; triangleNum < 2; triangleNum++) {
+    for (int cornerNum = 0; cornerNum < 3; cornerNum++) {
+      triangle[triangleNum].corners[cornerNum].xx = rand() % 1920;
+      triangle[triangleNum].corners[cornerNum].yy = rand() % 1080;
+    }
+  }
 
   struct Square *square = sharedSquare;
   square->xx = 500;

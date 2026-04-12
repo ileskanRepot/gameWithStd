@@ -22,7 +22,8 @@ void drawSquare(unsigned char *frameBuffer, struct Square *square,
                 unsigned char col0, unsigned char col1, unsigned char col2);
 void drawTriangle(unsigned char *frameBuffer, struct Triangle *triangle,
                   unsigned char col0, unsigned char col1, unsigned char col2);
-void drawLine(unsigned char *frameBuffer, struct Point point1,
-              struct Point point2);
+void drawLine(unsigned char *frameBuffer, struct Point p0, struct Point p1);
 void writeToScreen(int fd, unsigned char *frameBuffer);
-int drawLoop(struct Square *sharedSquare, struct Triangle *triangle, int draw);
+int drawLoop(struct FourCorner *sharedFourCorner, int draw);
+void draw4corners(unsigned char *frameBuffer, struct FourCorner *fourCorner);
+void twoPointToLine(struct Point *p0, struct Point *p1, struct Line *line);

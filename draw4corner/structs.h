@@ -6,7 +6,7 @@ struct GameState {
   unsigned char running;
 };
 
-struct Point {
+struct Point2d {
   double xx;
   double yy;
 };
@@ -34,7 +34,7 @@ struct Square {
 };
 
 struct Triangle {
-  struct Point corners[3];
+  struct Point2d corners[3];
 };
 
 /*
@@ -43,7 +43,7 @@ struct Triangle {
  * ...
  */
 struct FourCorner {
-  struct Point corners[4];
+  struct Point2d corners[4];
   struct Triangle drawTriangles[2];
 };
 

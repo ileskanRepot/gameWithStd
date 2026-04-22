@@ -33,7 +33,8 @@ void sortTriangleCorners(struct Triangle *triangle) {
   return;
 }
 
-void drawLine(unsigned char *frameBuffer, struct Point p0, struct Point p1) {
+void drawLine(unsigned char *frameBuffer, struct Point2d p0,
+              struct Point2d p1) {
   struct Line line;
   if (p0.xx > p1.xx) {
     swap(&p0.xx, &p1.xx);
@@ -94,7 +95,7 @@ void draw4corners(unsigned char *frameBuffer, struct FourCorner *fourCorner) {
   }
 }
 
-void twoPointToLine(struct Point *p0, struct Point *p1, struct Line *line) {
+void twoPointToLine(struct Point2d *p0, struct Point2d *p1, struct Line *line) {
   if (p0->xx != p1->xx) {
     line->kk = (p0->yy - p1->yy) / (p0->xx - p1->xx);
     line->oneOverkk = 1.0 / line->kk;

@@ -18,7 +18,7 @@ int physicsLoop(char *inputMemory, struct Square *sharedSquare,
   square->ww = 100;
   square->hh = 100;
 
-  struct Point max = {.xx = WIDTH, .yy = HEIGHT};
+  struct Point2d max = {.xx = WIDTH, .yy = HEIGHT};
 
   const double baseSpeed = 15.0;
   const double bothDirSpeed = 1.0 / sqrt(2);

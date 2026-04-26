@@ -1,5 +1,5 @@
 CC=gcc
-FILES=render.c misc.c inputs.c physics.c
+FILES=render.c misc.c inputs.c physics.c config.c
 
 all: main.c $(FILES)
 	$(CC) -g -lm -O3 -fopenmp main.c $(FILES) -o main

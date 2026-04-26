@@ -1,17 +1,17 @@
 #include "physics.h"
-#include "structs.h"
+// #include "structs.h"
 
 int physicsLoop(char *inputMemory, struct Plane *sharedPlane) {
   //   unsigned char *frameBuffer = malloc(BUFF_SIZE);
 
   struct Plane *plane = sharedPlane;
-  plane->corners[0].xx = 5;
-  cube->pos.yy = 0;
-  cube->pos.zz = 0;
-
-  cube->size.xx = 1;
-  cube->size.yy = 1;
-  cube->size.zz = 1;
+  for (char ii = 0; ii < 2; ii++) {
+    for (char jj = 0; jj < 2; jj++) {
+      plane->corners[jj + 2 * ii].xx = 5;
+      plane->corners[jj + 2 * ii].yy = 5 * ii;
+      plane->corners[jj + 2 * ii].zz = 5 * jj;
+    }
+  }
 
   struct Point2d max = {.xx = WIDTH, .yy = HEIGHT};
 
@@ -65,8 +65,8 @@ int physicsLoop(char *inputMemory, struct Plane *sharedPlane) {
       speedXX = 0;
     }
 
-    cube->pos.yy += speedXX;
-    cube->pos.zz -= speedYY;
+    // cube->pos.yy += speedXX;
+    // cube->pos.zz -= speedYY;
     speedXX -= sign(speedXX) * speedDrop;
     speedYY -= sign(speedYY) * speedDrop;
     speedXX = absMy(speedXX) < speedDrop ? 0 : speedXX;

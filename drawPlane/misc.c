@@ -20,3 +20,8 @@ void swap(double *num0, double *num1) {
   *num0 = *num1;
   *num1 = tmp;
 }
+
+double vecLen3d(struct Point3d *point3d) {
+  return sqrt(point3d->xx * point3d->xx + point3d->yy * point3d->yy +
+              point3d->zz * point3d->zz);
+}

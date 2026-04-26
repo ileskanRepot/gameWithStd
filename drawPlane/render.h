@@ -27,4 +27,4 @@ void writeToScreen(int fd, unsigned char *frameBuffer);
 int drawLoop(struct Plane *plane, int draw);
 void draw4corners(unsigned char *frameBuffer, struct FourCorner *fourCorner);
 void twoPointToLine(struct Point2d *p0, struct Point2d *p1, struct Line *line);
-void drawPlane(unsigned char *frameBuffer, struct Plane *plane);
+void draw3dPoint(unsigned char *frameBuffer, struct Point3d *point3d);

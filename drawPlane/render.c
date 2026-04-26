@@ -1,7 +1,10 @@
 #include "render.h"
 #include "config.h"
-#include "misc.h"
+#include "math.h"
 #include "structs.h"
+// #include "config.h"
+// #include "misc.h"
+// #include "structs.h"
 
 void blackBox(unsigned char *frameBuffer) {
   memset(frameBuffer, 0, WIDTH * HEIGHT * PIXEL_SIZE);
@@ -177,7 +180,41 @@ void drawTriangle(unsigned char *frameBuffer, struct Triangle *triangle,
   return;
 }
 
-void drawPlane(unsigned char *frameBuffer, struct Plane *plane) {}
+void threeDimPointToTwoDim(struct Point3d *point3d, struct Point2d *point2d) {
+  point3d->xx = 1.0;
+  point3d->yy = 0.5;
+  point3d->zz = 0.0;
+  struct Point3d viewDir = {5.0, 0.0, 0.0};
+
+  double anglVert =
+      acos((point3d->xx * viewDir.xx + point3d->zz * viewDir.zz) /
+           (sqrt(point3d->xx * point3d->xx + point3d->zz * point3d->zz) *
+            sqrt(viewDir.xx * viewDir.xx + viewDir.zz * viewDir.zz)));
+  double anglHort =
+      acos((point3d->xx * viewDir.xx + point3d->yy * viewDir.yy) /
+           (sqrt(point3d->xx * point3d->xx + point3d->yy * point3d->yy) *
+            sqrt(viewDir.xx * viewDir.xx + viewDir.yy * viewDir.yy)));
+
+  double xx = WIDTH / 2.0 + (anglVert / FOV_VERT) * WIDTH;
+  double yy = HEIGHT / 2.0 + (anglHort / FOV_HORT) * HEIGHT;
+
+  point2d->xx = xx;
+  point2d->yy = yy;
+}
+
+void draw3dPoint(unsigned char *frameBuffer, struct Point3d *point3d) {
+  struct Point2d point2d;
+  threeDimPointToTwoDim(point3d, &point2d);
+  int pos = point2d.yy;
+  pos *= WIDTH;
+  pos += point2d.xx;
+  pos *= PIXEL_SIZE;
+
+  frameBuffer[pos + 0] = 255;
+  frameBuffer[pos + 1] = 0;
+  frameBuffer[pos + 2] = 255;
+  printf("moi (%d, %d)\n", (int)point2d.xx, (int)point2d.yy);
+}
 
 void writeToScreen(int fd, unsigned char *frameBuffer) {
   lseek(fd, 0, SEEK_SET);
@@ -212,7 +249,11 @@ int drawLoop(struct Plane *sharedPlane, int draw) {
     // drawTriangle(frameBuffer, &triangle[0], 0, 0, 255);
     // drawTriangle(frameBuffer, &triangle[1], 255, 0, 255);
     // draw4corners(frameBuffer, fourCorner);
-    drawPlane(frameBuffer, plane);
+    struct Point3d p3d;
+    p3d.xx = 5;
+    p3d.yy = 0;
+    p3d.zz = 0;
+    draw3dPoint(frameBuffer, &p3d);
     if (draw) {
       writeToScreen(screenFd, frameBuffer);
     }

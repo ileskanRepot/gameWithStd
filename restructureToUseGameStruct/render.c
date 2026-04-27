@@ -225,7 +225,7 @@ void writeToScreen(int fd, unsigned char *frameBuffer) {
   }
 }
 
-int drawLoop(struct Plane *sharedPlane, int draw) {
+int drawLoop(struct Game *sharedGame) {
   int screenFd = open("/dev/fb0", O_WRONLY);
   if (screenFd < 0) {
     perror("Could not open frame buffer");
@@ -235,12 +235,13 @@ int drawLoop(struct Plane *sharedPlane, int draw) {
   char record = 0;
 
   unsigned char *frameBuffer = malloc(BUFF_SIZE);
-  struct Plane *plane = sharedPlane;
+  struct Game *game = sharedGame;
+  char draw = game->draw;
 
   struct timeval start, stop1, stop2;
 
-  char up = 0, down = 0, left = 0, right = 0, running = 1, tooSlow = 0;
-  while (running) {
+  char up = 0, down = 0, left = 0, right = 0, tooSlow = 0;
+  while (sharedGame->running) {
     gettimeofday(&start, NULL);
 
     blackBox(frameBuffer);
@@ -271,6 +272,7 @@ int drawLoop(struct Plane *sharedPlane, int draw) {
     gettimeofday(&stop2, NULL);
     uint64_t delta_us2 = (stop2.tv_sec - start.tv_sec) * 1000000 +
                          (stop2.tv_usec - start.tv_usec);
+    game->running = 0;
   }
 
   free(frameBuffer);

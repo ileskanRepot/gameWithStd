@@ -29,9 +29,11 @@ int main(int argc, char *argv[]) {
   // struct FourCorner *sharedFourCorner = (struct FourCorner *)mmap(
   //     NULL, sizeof(struct FourCorner), PROT_READ | PROT_WRITE,
   //     MAP_SHARED | MAP_ANON, -1, 0);
-  struct Plane *sharedPlane =
-      (struct Plane *)mmap(NULL, sizeof(struct Plane), PROT_READ | PROT_WRITE,
-                           MAP_SHARED | MAP_ANON, -1, 0);
+  struct Game *game =
+      (struct Game *)mmap(NULL, sizeof(struct Game), PROT_READ | PROT_WRITE,
+                          MAP_SHARED | MAP_ANON, -1, 0);
+  game->running = 1;
+  game->draw = 1;
 
   pid_t mainFork = fork();
   if (mainFork < 0) {
@@ -42,7 +44,7 @@ int main(int argc, char *argv[]) {
     int draw = 1;
     if (argc >= 2)
       draw = 0;
-    drawLoop(sharedPlane, draw);
+    drawLoop(game);
     exit(0);
   }
 
@@ -52,12 +54,12 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
   if (physicsFork == 0 && mainFork != 0) {
-    physicsLoop(inputMemory, sharedPlane);
+    physicsLoop(inputMemory, game);
     exit(0);
   }
 
   if (physicsFork != 0 && mainFork != 0) {
-    inputLoop(inputMemory);
+    inputLoop(inputMemory, game);
     exit(0);
   }
   return 0;

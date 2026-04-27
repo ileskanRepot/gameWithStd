@@ -79,4 +79,7 @@ struct Player {
 struct Game {
   unsigned char running;
   struct Player player;
+  struct Point3d point2d;
+  struct Plane plane;
+  char draw;
 };

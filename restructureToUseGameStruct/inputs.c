@@ -1,6 +1,6 @@
 #include "inputs.h"
 
-void inputLoop(char *inputMemory) {
+void inputLoop(char *inputMemory, struct Game *sharedGame) {
   int timeoutMs = 5000;
   char inputDev[] = "/dev/input/event0";
   int st;
@@ -27,7 +27,7 @@ void inputLoop(char *inputMemory) {
   fds[0].events = POLLIN;
 
   int running = 1;
-  while (running) {
+  while (sharedGame->running) {
     ret = poll(fds, 1, timeoutMs);
     if (ret <= 0) {
       printf("timeout\n");
@@ -68,7 +68,7 @@ void inputLoop(char *inputMemory) {
       break;
     case exitCode:
       inputMemory[exitIndex] = inputData->value;
-      running = !inputData->value;
+      sharedGame->running = !inputData->value;
       break;
     default:
       break;

@@ -24,7 +24,7 @@ void drawTriangle(unsigned char *frameBuffer, struct Triangle *triangle,
                   unsigned char col0, unsigned char col1, unsigned char col2);
 void drawLine(unsigned char *frameBuffer, struct Point2d p0, struct Point2d p1);
 void writeToScreen(int fd, unsigned char *frameBuffer);
-int drawLoop(struct Plane *plane, int draw);
+int drawLoop(struct Game *game);
 void draw4corners(unsigned char *frameBuffer, struct FourCorner *fourCorner);
 void twoPointToLine(struct Point2d *p0, struct Point2d *p1, struct Line *line);
 void draw3dPoint(unsigned char *frameBuffer, struct Point3d *point3d);

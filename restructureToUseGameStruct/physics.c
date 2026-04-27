@@ -1,15 +1,15 @@
 #include "physics.h"
 // #include "structs.h"
 
-int physicsLoop(char *inputMemory, struct Plane *sharedPlane) {
+int physicsLoop(char *inputMemory, struct Game *sharedGame) {
   //   unsigned char *frameBuffer = malloc(BUFF_SIZE);
 
-  struct Plane *plane = sharedPlane;
+  struct Game *game = sharedGame;
   for (char ii = 0; ii < 2; ii++) {
     for (char jj = 0; jj < 2; jj++) {
-      plane->corners[jj + 2 * ii].xx = 5;
-      plane->corners[jj + 2 * ii].yy = 5 * ii;
-      plane->corners[jj + 2 * ii].zz = 5 * jj;
+      game->plane.corners[jj + 2 * ii].xx = 5;
+      game->plane.corners[jj + 2 * ii].yy = 5 * ii;
+      game->plane.corners[jj + 2 * ii].zz = 5 * jj;
     }
   }
 
@@ -21,14 +21,13 @@ int physicsLoop(char *inputMemory, struct Plane *sharedPlane) {
   double speedDrop = 1.0;
   struct timeval start, stop1, stop2;
 
-  char up = 0, down = 0, left = 0, right = 0, running = 1;
-  while (running) {
+  char up = 0, down = 0, left = 0, right = 0;
+  while (sharedGame->running) {
     gettimeofday(&start, NULL);
     up = inputMemory[upIndex] != 0;
     down = inputMemory[downIndex] != 0;
     left = inputMemory[leftIndex] != 0;
     right = inputMemory[rightIndex] != 0;
-    running = inputMemory[exitIndex] == 0;
 
     if (left) {
       if (up ^ down) {

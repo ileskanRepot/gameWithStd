@@ -7,4 +7,4 @@
 #include "render.h"
 #include "structs.h"
 
-void inputLoop(char *inputMemory);
+void inputLoop(char *inputMemory, struct Game *sharedGame);
